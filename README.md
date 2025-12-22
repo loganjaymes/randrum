@@ -25,3 +25,4 @@ See the [documentation](DOCS.md).
 |  2  | Basic functionality (randomizing given .mid files & exporting)                         |   ⚠    |
 |  3  | Better TUI                                                                             |   ❌   |
 |  4  | Implementation for time signatures other than 4/4                                      |   ❌   |
+|  5  | Implementation for non-normalized midi files (fe. 4 bars vs 8 bars vs ...)             |   ❌   |

@@ -1,3 +1,10 @@
+/*
+mod args;
+
+use args::RanDrumArgs;
+use clap::{Args, Parser, Subcommand};
+*/
+
 fn main() {
-    println!("Hello, world!");
+    // let args = RanDrumArgs::parse();
 }

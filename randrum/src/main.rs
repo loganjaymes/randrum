@@ -4,12 +4,10 @@ mod args;
 use args::RanDrumArgs;
 use clap::{Args, Parser, Subcommand};
 */
-use::walkdir::WalkDir;
+mod merge;
 
 fn main() {
     // let args = RanDrumArgs::parse();
-    for entry in WalkDir::new("input") {
-        println!("{}", entry.unwrap().path().display());
-    }
+    merge::run("input");
 
 }

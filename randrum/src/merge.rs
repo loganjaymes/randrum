@@ -1,5 +1,4 @@
 use rand::seq::IteratorRandom;
-use std::collections::HashSet;
 use std::path::PathBuf;
 
 pub struct ChosenMIDI {
@@ -23,9 +22,9 @@ pub fn pick_rand(path: PathBuf) {//-> Export {
             let mut rng = rand::rng();
             println!("fold: {:?}", subfolder.file_name().unwrap());
             
-            if let Some(entry) = subfolder.read_dir().expect("Path shouldn't chnage").filter_map(Result::ok).choose(&mut rng) {
-                let res = entry.file_name();
-                println!("chose: {:?}", res);
+            if let Some(file) = subfolder.read_dir().expect("Path shouldn't chnage").filter_map(Result::ok).choose(&mut rng) {
+                // above: all valid directory entries go into a map and one is chosen at random
+                println!("chose: {:?}", file.file_name());
             }
         }
     }

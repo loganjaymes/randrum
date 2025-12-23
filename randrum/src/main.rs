@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 /*
 mod args;
 
@@ -8,6 +10,7 @@ mod merge;
 
 fn main() {
     // let args = RanDrumArgs::parse();
-    merge::run("input");
+    let mut path = PathBuf::from("input");
+    merge::pick(path);
 
 }

@@ -69,3 +69,7 @@
 ## IMPORTANT REFERENCES
 - [no bs code video](https://www.youtube.com/watch?v=P27ml4M3V7A)
 - [javidx9 video](https://www.youtube.com/watch?v=040BKtnDdg0)
+
+## FUTURE PLANS
+- TUI if i can figure out a way for it to be needed (imo TUIs > GUIs)
+    - most likely w/ ratatui or smth

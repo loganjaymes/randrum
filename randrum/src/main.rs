@@ -12,5 +12,4 @@ fn main() {
     // let args = RanDrumArgs::parse();
     let mut path = PathBuf::from("input");
     merge::pick_rand(path);
-
 }

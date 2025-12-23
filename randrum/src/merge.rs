@@ -17,20 +17,22 @@ pub fn pick(path: PathBuf) {//-> Export {
     let mut seen: HashSet<PathBuf> = HashSet::new();
     let paths = path.read_dir().expect("Path should never change so it should be fine.");
     
-    for dir in paths.filter_map(Result::ok) { // only iterate over dir if res == ok
-        let subfolder = dir.path();
+    for dir_res in paths { // only iterate over dir if res == ok
+        if let Ok(dir) = dir_res {
+            let subfolder = dir.path();
 
-        if !seen.contains(&subfolder) {
-            let mut rng = rand::rng();
-            println!("fold: {:?}", subfolder.file_name().unwrap());
-            
-            if let Some(entry) = subfolder.read_dir().expect("Path shouldn't chnage").filter_map(Result::ok).choose(&mut rng) {
-                let res = entry.file_name();
-                println!("chose: {:?}", res);
-            }
+            if !seen.contains(&subfolder) {
+                let mut rng = rand::rng();
+                println!("fold: {:?}", subfolder.file_name().unwrap());
+                
+                if let Some(entry) = subfolder.read_dir().expect("Path shouldn't chnage").filter_map(Result::ok).choose(&mut rng) {
+                    let res = entry.file_name();
+                    println!("chose: {:?}", res);
+                }
 
-            seen.insert(subfolder);
-        }    
+                seen.insert(subfolder);
+            }    
+        }
     }
    
 }

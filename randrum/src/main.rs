@@ -11,6 +11,6 @@ mod merge;
 fn main() {
     // let args = RanDrumArgs::parse();
     let mut path = PathBuf::from("input");
-    merge::pick(path);
+    merge::pick_rand(path);
 
 }

@@ -11,5 +11,9 @@ mod merge;
 fn main() {
     // let args = RanDrumArgs::parse();
     let path = PathBuf::from("input");
-    merge::pick_rand(path);
+    let picked_files = merge::pick_rand(path);
+
+    let a = merge::hmap_to_struct(picked_files);
+
+    println!("{:?}", a.unwrap());
 }

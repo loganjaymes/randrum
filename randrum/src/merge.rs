@@ -1,21 +1,24 @@
 use rand::seq::IteratorRandom;
-use std::{collections::HashMap, fs::DirEntry, path::PathBuf};
+use std::{collections::HashMap, path::{PathBuf}};
 
+#[derive(Debug)]
 pub struct ChosenMIDI {
-    // strings will be paths most likely (potentially change to PathBufs depending on midly's arguments for Smf)
-    kick: Option<String>,
-    snare: Option<String>,
-    hat: Option<String>,
-    crash: Option<String>,
-    ride: Option<String>,
-    tom: Option<String>,
+    // NOTE: Initially had struct as Option<PathBuf> since a user may only want a few instruments
+    kick: Option<PathBuf>,
+    snare: Option<PathBuf>,
+    hat: Option<PathBuf>,
+    crash: Option<PathBuf>,
+    ride: Option<PathBuf>,
+    high_tom: Option<PathBuf>,
+    low_tom: Option<PathBuf>,
     // have user input decide if Some or None based on instruments included in args
     // hacky way: choose a random for all (worst case: bad for runtime), then convert to None based on what user wants before having midly merge the files
 }
 
-pub fn pick_rand(path: PathBuf) -> HashMap<String, DirEntry> {
+pub fn pick_rand(path: PathBuf) -> HashMap<String, PathBuf> {
     let paths = path.read_dir().expect("Path should never change so it should be fine.");
-    let mut hmap: HashMap<String, DirEntry> = HashMap::new(); // TODO potentially deserialze with Serde, else a match statement but that might be chopped
+    let mut hmap: HashMap<String, PathBuf> = HashMap::new(); 
+    // above is string and not pathbuf to ensure hashmap ownership
     
     for dir_res in paths { // only iterate over dir if res == ok
         if let Ok(dir) = dir_res {
@@ -25,7 +28,8 @@ pub fn pick_rand(path: PathBuf) -> HashMap<String, DirEntry> {
             if let Some(file) = subfolder.read_dir().expect("Path shouldn't change").filter_map(Result::ok).choose(&mut rng) {
                 // above: all valid directory entries go into a map and one is chosen at random
                 let instrument = subfolder.file_name().unwrap();
-                hmap.insert(instrument.to_string_lossy().to_string(), file);
+                let midi = file.path();
+                hmap.insert(instrument.to_string_lossy().to_string(), midi);
                 // convert to cow pointer to allow ownership into hashmap after it is dropped
             }
         }
@@ -34,10 +38,14 @@ pub fn pick_rand(path: PathBuf) -> HashMap<String, DirEntry> {
     hmap
 }
 
-pub fn deserialze(hmap: HashMap<String, String>) -> Option<ChosenMIDI> {
-    // Source - https://stackoverflow.com/a
-    // Posted by Masklinn, modified by community. See post 'Timeline' for change history
-    // Retrieved 2025-12-24, License - CC BY-SA 4.0
-    serde_json::to_value(h).ok()
-        .and_then(|v| ChosenMIDI::deserialize(v).ok())
+pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> Option<ChosenMIDI> {
+    let kick = hmap.remove("kick");
+    let snare = hmap.remove("snare");
+    let hat = hmap.remove("hat");
+    let crash = hmap.remove("crash");
+    let ride = hmap.remove("ride");
+    let high_tom = hmap.remove("high_tom");
+    let low_tom = hmap.remove("low_tom");
+
+    Some(ChosenMIDI {kick, snare, hat, crash, ride, high_tom, low_tom})
 }

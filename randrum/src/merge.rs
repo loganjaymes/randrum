@@ -1,7 +1,17 @@
 use rand::seq::IteratorRandom;
 use std::{collections::HashMap, path::{PathBuf}};
-use midly::Smf;
+use midly::{Smf, num::u4};
 use std::fs;
+
+enum Channels {
+    KickChannel = 0,
+    SnareChannel = 1,
+    RackTomChannel = 2,
+    FloorTomChannel = 3,
+    HatChannel = 4,
+    RideChannel = 5,
+    CrashChannel = 6,
+}
 
 #[derive(Debug)]
 pub struct ChosenMIDI {
@@ -11,19 +21,16 @@ pub struct ChosenMIDI {
     hat: Option<PathBuf>,
     crash: Option<PathBuf>,
     ride: Option<PathBuf>,
-    high_tom: Option<PathBuf>,
-    low_tom: Option<PathBuf>,
+    rack_tom: Option<PathBuf>,
+    floor_tom: Option<PathBuf>,
     // have user input decide if Some or None based on instruments included in args
-    // in struct for reason above + organization
     // hacky way: choose a random for all (worst case: bad for runtime), then convert to None based on what user wants before having midly merge the files
 }
 
 impl ChosenMIDI {
-    pub fn idk_yet(&self) {
-        /* stopping for tn, final outline: 
+    pub fn export(&self) {
+        /*
         TODO: 
-        1. read from struct into midi (check if Path or PathBuf or String idfk)
-            (unsure if needing to store in a struct or just return the file. we shall see)
         2. merge each Smf object into one
         3. """""export""""" .mid file 
             (unsure if right terminology)
@@ -34,19 +41,32 @@ impl ChosenMIDI {
         */
 
         // 1. unwrap & get path
+        // TODO: Error handling, make sure not unwrapping a None
         let kick_mid = self.kick.as_ref().unwrap();
-        // let snare = self.snare.unwrap();
-        // let hat = self.hat.unwrap();
-        // let crash = self.crash.unwrap();
-        // let ride = self.ride.unwrap();
-        // let high_tom = self.high_tom.unwrap();
-        // let low_tom = self.low_tom.unwrap();
+        let snare_mid = self.snare.as_ref().unwrap();
+        // let hat = self.hat.as_ref().unwrap();
+        // let crash = self.crash.as_ref().unwrap();
+        // let ride = self.ride.as_ref().unwrap();
+        // let rack_tom = self.rack_tom.as_ref().unwrap();
+        // let floor_tom = self.floor_tom.as_ref().unwrap();
 
         // 2. get all midi (if not none or sumshi)
-        let test_bytes = fs::read(kick_mid).unwrap();
-        let test_smf = Smf::parse(&test_bytes).unwrap();
+        let kick_test_bytes = fs::read(kick_mid).unwrap();
+        let kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 
-        println!("{:?}", test_smf);
+        // let snare_test_bytes = fs::read(snare_mid).unwrap();
+        // let snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
+
+        println!("{:?}\n", kick_test_smf);
+        // println!("{:?}", snare_test_smf);
+
+        /* NOTE: Since drum channels are not universal 
+            (fe. someone could have a snare on A3 while another on C3), 
+            just make sure each file is not on same channel (ie. alter byte)
+        */
+
+        // 
+
     }
 }
 
@@ -81,8 +101,13 @@ pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
     let hat = hmap.remove("hat");
     let crash = hmap.remove("crash");
     let ride = hmap.remove("ride");
-    let high_tom = hmap.remove("high_tom");
-    let low_tom = hmap.remove("low_tom");
+    let rack_tom = hmap.remove("rack_tom");
+    let floor_tom = hmap.remove("floor_tom");
 
-    ChosenMIDI {kick, snare, hat, crash, ride, high_tom, low_tom}
+    ChosenMIDI {kick, snare, hat, crash, ride, rack_tom, floor_tom}
+}
+
+// TODO: implement fn that takes in a Smf object and changes each midi message's channel
+pub fn change_midi_channel(mf: &mut midly::Smf, channel: u4) -> midly::Smf {
+    
 }

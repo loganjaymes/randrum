@@ -109,10 +109,12 @@ pub fn change_midi_channel(mf: &mut midly::Smf, channel: String) {
     CrashChannel = 6,
     */
 
+    // might be chopped, but
     /*
     match channel {
         "snare" => // iterate over smf and change
         _ => do nothing // INCLUDES KICK since kick is on channel 0 (default channel) 
+        // may need to specify that its a u4 but unsure rn
     }   
     */
 }

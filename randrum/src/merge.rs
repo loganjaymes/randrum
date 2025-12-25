@@ -3,16 +3,6 @@ use std::{collections::HashMap, path::{PathBuf}};
 use midly::{Smf, num::u4};
 use std::fs;
 
-enum Channels {
-    KickChannel = 0,
-    SnareChannel = 1,
-    RackTomChannel = 2,
-    FloorTomChannel = 3,
-    HatChannel = 4,
-    RideChannel = 5,
-    CrashChannel = 6,
-}
-
 #[derive(Debug)]
 pub struct ChosenMIDI {
     // NOTE: Initially had struct as Option<PathBuf> since a user may only want a few instruments
@@ -43,7 +33,7 @@ impl ChosenMIDI {
         // 1. unwrap & get path
         // TODO: Error handling, make sure not unwrapping a None
         let kick_mid = self.kick.as_ref().unwrap();
-        let snare_mid = self.snare.as_ref().unwrap();
+        // let snare_mid = self.snare.as_ref().unwrap();
         // let hat = self.hat.as_ref().unwrap();
         // let crash = self.crash.as_ref().unwrap();
         // let ride = self.ride.as_ref().unwrap();
@@ -65,7 +55,7 @@ impl ChosenMIDI {
             just make sure each file is not on same channel (ie. alter byte)
         */
 
-        // 
+        // for each non-None midi file, call change_midi_channel and do so wrt proper channel as defined in enum
 
     }
 }
@@ -108,6 +98,21 @@ pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
 }
 
 // TODO: implement fn that takes in a Smf object and changes each midi message's channel
-pub fn change_midi_channel(mf: &mut midly::Smf, channel: u4) -> midly::Smf {
-    
+pub fn change_midi_channel(mf: &mut midly::Smf, channel: String) {
+    /*
+    KickChannel = 0,
+    SnareChannel = 1,
+    RackTomChannel = 2,
+    FloorTomChannel = 3,
+    HatChannel = 4,
+    RideChannel = 5,
+    CrashChannel = 6,
+    */
+
+    /*
+    match channel {
+        "snare" => // iterate over smf and change
+        _ => do nothing // INCLUDES KICK since kick is on channel 0 (default channel) 
+    }   
+    */
 }

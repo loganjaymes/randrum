@@ -16,6 +16,17 @@ fn main() {
     let a = merge::hmap_to_struct(picked_files);
 
     // println!("{:?}", a.unwrap());
-    
+
+    /*
+    TODO: 
+    2. merge each Smf object into one
+    3. """""export""""" .mid file 
+        (unsure if right terminology)
+    4. set up CLI w/ CLAP
+    5. allow users to select what drums they want
+    6. ??? (67)
+    7. Done ! Smile.
+    */
+
     a.export();
 }

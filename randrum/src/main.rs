@@ -17,16 +17,5 @@ fn main() {
 
     println!("{:?}", a.unwrap());
 
-    /* stopping for tn, final outline: 
-    TODO: 
-    1. read from struct into midi
-        (unsure if needing to store in a struct or just return the file. we shall see)
-    2. merge each Smf object into one
-    3. """""export""""" .mid file 
-        (unsure if right terminology)
-    4. set up CLI w/ CLAP
-    5. allow users to select what drums they want
-    6. ??? (67)
-    7. Done ! Smile.
-    */
+    merge::idk_yet(a);
 }

@@ -1,5 +1,7 @@
 use rand::seq::IteratorRandom;
 use std::{collections::HashMap, path::{PathBuf}};
+use midly::Smf;
+use std::fs;
 
 #[derive(Debug)]
 pub struct ChosenMIDI {
@@ -13,6 +15,38 @@ pub struct ChosenMIDI {
     low_tom: Option<PathBuf>,
     // have user input decide if Some or None based on instruments included in args
     // hacky way: choose a random for all (worst case: bad for runtime), then convert to None based on what user wants before having midly merge the files
+}
+
+impl ChosenMIDI {
+    pub fn idk_yet(cm: ChosenMIDI) {
+        /* stopping for tn, final outline: 
+        TODO: 
+        1. read from struct into midi (check if Path or PathBuf or String idfk)
+            (unsure if needing to store in a struct or just return the file. we shall see)
+        2. merge each Smf object into one
+        3. """""export""""" .mid file 
+            (unsure if right terminology)
+        4. set up CLI w/ CLAP
+        5. allow users to select what drums they want
+        6. ??? (67)
+        7. Done ! Smile.
+        */
+
+        // 1. unwrap & get path
+        let kick = cm.kick.unwrap();
+        let snare = cm.snare.unwrap();
+        let hat = cm.hat.unwrap();
+        let crash = cm.crash.unwrap();
+        let ride = cm.ride.unwrap();
+        let high_tom = cm.high_tom.unwrap();
+        let low_tom = cm.low_tom.unwrap();
+
+        // 2. get all midi (if not none or sumshi)
+        let test_bytes = fs::read(kick).unwrap();
+        let test_smf = Smf::parse(&test_bytes).unwrap();
+
+
+    }
 }
 
 pub fn pick_rand(path: PathBuf) -> HashMap<String, PathBuf> {

@@ -14,11 +14,12 @@ pub struct ChosenMIDI {
     high_tom: Option<PathBuf>,
     low_tom: Option<PathBuf>,
     // have user input decide if Some or None based on instruments included in args
+    // in struct for reason above + organization
     // hacky way: choose a random for all (worst case: bad for runtime), then convert to None based on what user wants before having midly merge the files
 }
 
 impl ChosenMIDI {
-    pub fn idk_yet(cm: ChosenMIDI) {
+    pub fn idk_yet(&self) {
         /* stopping for tn, final outline: 
         TODO: 
         1. read from struct into midi (check if Path or PathBuf or String idfk)
@@ -33,19 +34,19 @@ impl ChosenMIDI {
         */
 
         // 1. unwrap & get path
-        let kick = cm.kick.unwrap();
-        let snare = cm.snare.unwrap();
-        let hat = cm.hat.unwrap();
-        let crash = cm.crash.unwrap();
-        let ride = cm.ride.unwrap();
-        let high_tom = cm.high_tom.unwrap();
-        let low_tom = cm.low_tom.unwrap();
+        let kick_mid = self.kick.as_ref().unwrap();
+        // let snare = self.snare.unwrap();
+        // let hat = self.hat.unwrap();
+        // let crash = self.crash.unwrap();
+        // let ride = self.ride.unwrap();
+        // let high_tom = self.high_tom.unwrap();
+        // let low_tom = self.low_tom.unwrap();
 
         // 2. get all midi (if not none or sumshi)
-        let test_bytes = fs::read(kick).unwrap();
+        let test_bytes = fs::read(kick_mid).unwrap();
         let test_smf = Smf::parse(&test_bytes).unwrap();
 
-
+        println!("{:?}", test_smf);
     }
 }
 
@@ -72,7 +73,9 @@ pub fn pick_rand(path: PathBuf) -> HashMap<String, PathBuf> {
     hmap
 }
 
-pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> Option<ChosenMIDI> {
+pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
+    // option midi is unec. since individual fields are options (ie. it (((SHOULD BE))) fine even if all attr. are None)
+    // can always change back if req
     let kick = hmap.remove("kick");
     let snare = hmap.remove("snare");
     let hat = hmap.remove("hat");
@@ -81,5 +84,5 @@ pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> Option<ChosenMIDI> 
     let high_tom = hmap.remove("high_tom");
     let low_tom = hmap.remove("low_tom");
 
-    Some(ChosenMIDI {kick, snare, hat, crash, ride, high_tom, low_tom})
+    ChosenMIDI {kick, snare, hat, crash, ride, high_tom, low_tom}
 }

@@ -15,7 +15,7 @@ fn main() {
 
     let a = merge::hmap_to_struct(picked_files);
 
-    println!("{:?}", a.unwrap());
-
-    merge::idk_yet(a);
+    // println!("{:?}", a.unwrap());
+    
+    a.idk_yet();
 }

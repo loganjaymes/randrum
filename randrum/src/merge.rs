@@ -18,9 +18,10 @@ pub struct ChosenMIDI {
 }
 
 impl ChosenMIDI {
-    pub fn export(&self) {
+    pub fn export(&self, name: &str) {
         /*
         TODO: 
+        0. name validation (.ie ends in .MID)
         2. merge each Smf object into one
         3. """""export""""" .mid file 
             (unsure if right terminology)
@@ -33,7 +34,7 @@ impl ChosenMIDI {
         // 1. unwrap & get path
         // TODO: Error handling, make sure not unwrapping a None
         let kick_mid = self.kick.as_ref().unwrap();
-        // let snare_mid = self.snare.as_ref().unwrap();
+        let snare_mid = self.snare.as_ref().unwrap();
         // let hat = self.hat.as_ref().unwrap();
         // let crash = self.crash.as_ref().unwrap();
         // let ride = self.ride.as_ref().unwrap();
@@ -44,11 +45,11 @@ impl ChosenMIDI {
         let kick_test_bytes = fs::read(kick_mid).unwrap();
         let kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 
-        // let snare_test_bytes = fs::read(snare_mid).unwrap();
-        // let snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
+        let snare_test_bytes = fs::read(snare_mid).unwrap();
+        let snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
 
-        println!("{:?}\n", kick_test_smf);
-        // println!("{:?}", snare_test_smf);
+        println!("{:?}\n\n", kick_test_smf.tracks);
+        println!("{:?}", snare_test_smf);
 
         /* NOTE: Since drum channels are not universal 
             (fe. someone could have a snare on A3 while another on C3), 
@@ -95,26 +96,4 @@ pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
     let floor_tom = hmap.remove("floor_tom");
 
     ChosenMIDI {kick, snare, hat, crash, ride, rack_tom, floor_tom}
-}
-
-// TODO: implement fn that takes in a Smf object and changes each midi message's channel
-pub fn change_midi_channel(mf: &mut midly::Smf, channel: String) {
-    /*
-    KickChannel = 0,
-    SnareChannel = 1,
-    RackTomChannel = 2,
-    FloorTomChannel = 3,
-    HatChannel = 4,
-    RideChannel = 5,
-    CrashChannel = 6,
-    */
-
-    // might be chopped, but
-    /*
-    match channel {
-        "snare" => // iterate over smf and change
-        _ => do nothing // INCLUDES KICK since kick is on channel 0 (default channel) 
-        // may need to specify that its a u4 but unsure rn
-    }   
-    */
 }

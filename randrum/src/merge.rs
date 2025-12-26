@@ -3,6 +3,59 @@ use std::{collections::HashMap, path::{PathBuf}};
 use midly::{Smf, num::u4};
 use std::fs;
 
+#[cfg(test)]
+mod test {
+    use std::path::PathBuf;
+    use std::fs;
+    use crate::merge::ChosenMIDI;
+    use midly::{Smf, num::u4};
+
+    #[test]
+    fn k4fs24() {
+        let correct_bytes = fs::read("test/k4s24.MID").unwrap();
+        let correct_smf = Smf::parse(&correct_bytes).unwrap();
+
+        let test_mid = ChosenMIDI { 
+            kick: Some("input/kick/4onfloor.MID".into()), 
+            snare: Some("input/snare/2and4.MID".into()), 
+            hat: None, 
+            crash: None, 
+            ride: None, 
+            rack_tom: None, 
+            floor_tom: None, 
+        };
+
+        test_mid.export("TESTk4fs24.MID"); 
+
+        let test_bytes = fs::read("exports/TESTk4fs24.MID").unwrap();
+        let test_smf = Smf::parse(&test_bytes).unwrap();
+
+        assert_eq!(test_smf, correct_smf);
+    }
+
+    fn k13s24h8() {
+        let correct_bytes = fs::read("exports/TESTk13s24h8.MID").unwrap();
+        let correct_smf = Smf::parse(&correct_bytes).unwrap();
+
+        let test_mid = ChosenMIDI { 
+            kick: Some("input/kick/1and3.MID".into()), 
+            snare: Some("input/snare/2and4.MID".into()), 
+            hat: Some("input/hihat/straight8ths.MID".into()), 
+            crash: None, 
+            ride: None, 
+            rack_tom: None, 
+            floor_tom: None, 
+        };
+
+        test_mid.export("TESTk13s24h8.MID"); 
+
+        let test_bytes = fs::read("exports/TESTk13s24h8.MID").unwrap();
+        let test_smf = Smf::parse(&test_bytes).unwrap();
+
+        assert_eq!(test_smf, correct_smf);
+    }
+}
+
 #[derive(Debug)]
 pub struct ChosenMIDI {
     // NOTE: Initially had struct as Option<PathBuf> since a user may only want a few instruments
@@ -21,7 +74,7 @@ impl ChosenMIDI {
     pub fn export(&self, name: &str) {
         /*
         TODO: 
-        0. name validation (.ie ends in .MID)
+        0. name validation (.ie ends in .MID/normalization)
         2. merge each Smf object into one
         3. """""export""""" .mid file 
             (unsure if right terminology)
@@ -33,8 +86,13 @@ impl ChosenMIDI {
 
         // 1. unwrap & get path
         // TODO: Error handling, make sure not unwrapping a None
-        let kick_mid = self.kick.as_ref().unwrap();
-        let snare_mid = self.snare.as_ref().unwrap();
+        // let kick_mid = self.kick.as_ref().unwrap();
+        // let snare_mid = self.snare.as_ref().unwrap();
+
+        let kick_mid = "input/kick/4onfloor.MID";
+        let snare_mid = "input/snare/2and4.MID";
+
+
         // let hat = self.hat.as_ref().unwrap();
         // let crash = self.crash.as_ref().unwrap();
         // let ride = self.ride.as_ref().unwrap();

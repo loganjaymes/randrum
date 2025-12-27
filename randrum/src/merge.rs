@@ -1,7 +1,6 @@
 use rand::seq::IteratorRandom;
-use std::{collections::HashMap, fs::File, io::Write, ops::BitAnd, path::PathBuf};
+use std::{fs, collections::HashMap, path::PathBuf};
 use midly::{Format, Header, Smf, Timing};
-use std::fs;
 
 /* IGNORE TESTS SINCE COMPARING ISNT 100% ACCURATE
 #[cfg(test)]
@@ -88,27 +87,22 @@ impl ChosenMIDI {
     pub fn export(&mut self, name: &str) {
         self.unwrap_struct();
         println!("{:?}", self.stored_unwraps);
-        /*
+        
         let valid_name = export_name_validation(name.to_string());
 
         // 960 may be incorrect/not always true, based on time sig
         let temp_header = Header::new(Format::Parallel, Timing::Metrical(960.into()));
         let mut init_smf = Smf::new(temp_header);
 
-        // 1. unwrap & get path
-        // TODO: Error handling, make sure not unwrapping a None; might be better practice to write unwrap_struct fn
-
-
-        let kick_mid = self.kick.as_ref().unwrap();
-        let snare_mid = self.snare.as_ref().unwrap();
-        let hat_mid = self.hat.as_ref().unwrap();
-        // let crash_mid = self.crash.as_ref().unwrap();
-        // let ride_mid = self.ride.as_ref().unwrap();
-        // let rack_tom_mid = self.rack_tom.as_ref().unwrap();
-        // let floor_tom_mid = self.floor_tom.as_ref().unwrap();
-
-        // 2. get all midi (if not none or sumshi)
+        /* nop
+        for (i, path) in self.stored_unwraps.iter().enumerate() {
+            let temp_bytes = fs::read(path).unwrap();
+            let temp_smf = Smf::parse(&temp_bytes).unwrap();
+            init_smf.tracks.extend(temp_smf.tracks);
+        }
+        */
         
+        /*
         let kick_test_bytes = fs::read(kick_mid).unwrap();
         let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 

@@ -15,6 +15,7 @@ mod test {
         let correct_smf = Smf::parse(&correct_bytes).unwrap();
 
         let test_mid = ChosenMIDI { 
+            // combining tracks may not result in same order but correct output; potentially sort and compare bytes. somewhat inefficient but yeah
             kick: Some("input/kick/4onfloor.MID".into()), 
             snare: Some("input/snare/2and4.MID".into()), 
             hat: None, 

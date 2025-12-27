@@ -22,6 +22,6 @@ fn main() {
     // let args = RanDrumArgs::parse();
     let path = PathBuf::from("input");
     let picked_files = merge::pick_rand(path);
-    let a = merge::hmap_to_struct(picked_files);
+    let mut a = merge::hmap_to_struct(picked_files);
     a.export("test");
 }

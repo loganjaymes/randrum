@@ -62,7 +62,6 @@ mod test {
 
 #[derive(Debug)]
 pub struct ChosenMIDI {
-    // NOTE: Initially had struct as Option<PathBuf> since a user may only want a few instruments
     kick: Option<PathBuf>,
     snare: Option<PathBuf>,
     hat: Option<PathBuf>,
@@ -70,23 +69,26 @@ pub struct ChosenMIDI {
     ride: Option<PathBuf>,
     rack_tom: Option<PathBuf>,
     floor_tom: Option<PathBuf>,
+    stored_unwraps: Vec<PathBuf>,
     // have user input decide if Some or None based on instruments included in args
-    // hacky way: choose a random for all (worst case: bad for runtime), then convert to None based on what user wants before having midly merge the files
 }
 
 impl ChosenMIDI {
-    pub fn export(&self, name: &str) {
-        /*
-        TODO: 
-        2. merge each Smf object into one
-        3. """""export""""" .mid file 
-            (unsure if right terminology)
-        4. set up CLI w/ CLAP
-        5. allow users to select what drums they want
-        6. ??? (67)
-        7. Done ! Smile.
-        */
+    pub fn unwrap_struct(&mut self) {
+        // holy chuzz 
+        if let Some(kick_mid) = &self.kick { self.stored_unwraps.push(kick_mid.to_path_buf()); }   
+        if let Some(snare_mid) = &self.snare { self.stored_unwraps.push(snare_mid.to_path_buf()); }  
+        if let Some(hat_mid) = &self.hat { self.stored_unwraps.push(hat_mid.to_path_buf()); }  
+        if let Some(crash_mid) = &self.crash { self.stored_unwraps.push(crash_mid.to_path_buf()); }  
+        if let Some(ride_mid) = &self.ride { self.stored_unwraps.push(ride_mid.to_path_buf()); }  
+        if let Some(rack_mid) = &self.rack_tom { self.stored_unwraps.push(rack_mid.to_path_buf()); }  
+        if let Some(floor_mid) = &self.floor_tom { self.stored_unwraps.push(floor_mid.to_path_buf()); }  
+    }
 
+    pub fn export(&mut self, name: &str) {
+        self.unwrap_struct();
+        println!("{:?}", self.stored_unwraps);
+        /*
         let valid_name = export_name_validation(name.to_string());
 
         // 960 may be incorrect/not always true, based on time sig
@@ -95,20 +97,6 @@ impl ChosenMIDI {
 
         // 1. unwrap & get path
         // TODO: Error handling, make sure not unwrapping a None; might be better practice to write unwrap_struct fn
-        /*
-        if let Some(kick_mid) = self.kick.as_ref() {
-            let kick_test_bytes: Vec<u8> = fs::read(kick_mid).unwrap();
-            let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
-            // println!("{:?}", kick_test_smf);
-            init_smf.tracks.append(&mut kick_test_smf.tracks);
-        }   
-
-        if let Some(snare_mid) = self.snare.as_ref() {
-            let snare_test_bytes: Vec<u8> = fs::read(snare_mid).unwrap();
-            let mut snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
-            init_smf.tracks.append(&mut snare_test_smf.tracks);
-        }  
-        */
 
 
         let kick_mid = self.kick.as_ref().unwrap();
@@ -137,6 +125,7 @@ impl ChosenMIDI {
         test_f.write_all(&export_mem).expect("write unsucc");
         // NOTE: cannot use Smf::save since (on windows) no perms and unable to change writer attr
         // export.save(name).unwrap();
+        */
     }
 }
 
@@ -185,6 +174,7 @@ pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
     let ride = hmap.remove("ride");
     let rack_tom = hmap.remove("rack_tom");
     let floor_tom = hmap.remove("floor_tom");
+    let stored_unwraps: Vec<PathBuf> = Vec::new();
 
-    ChosenMIDI {kick, snare, hat, crash, ride, rack_tom, floor_tom}
+    ChosenMIDI {kick, snare, hat, crash, ride, rack_tom, floor_tom, stored_unwraps }
 }

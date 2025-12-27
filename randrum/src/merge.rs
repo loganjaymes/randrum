@@ -93,36 +93,33 @@ impl ChosenMIDI {
         // TODO: Error handling, make sure not unwrapping a None; might be better practice to write unwrap_struct fn
         let kick_mid = self.kick.as_ref().unwrap();
         let snare_mid = self.snare.as_ref().unwrap();
-
-        // let kick_mid = "input/kick/4onfloor.MID";
-        // let snare_mid = "input/snare/2and4.MID";
-
-
-        // let hat = self.hat.as_ref().unwrap();
-        // let crash = self.crash.as_ref().unwrap();
-        // let ride = self.ride.as_ref().unwrap();
-        // let rack_tom = self.rack_tom.as_ref().unwrap();
-        // let floor_tom = self.floor_tom.as_ref().unwrap();
+        let hat_mid = self.hat.as_ref().unwrap();
+        // let crash_mid = self.crash.as_ref().unwrap();
+        // let ride_mid = self.ride.as_ref().unwrap();
+        // let rack_tom_mid = self.rack_tom.as_ref().unwrap();
+        // let floor_tom_mid = self.floor_tom.as_ref().unwrap();
 
         // 2. get all midi (if not none or sumshi)
-        let mut kick_test_bytes = fs::read(kick_mid).unwrap();
+        let kick_test_bytes = fs::read(kick_mid).unwrap();
         let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 
-        let mut snare_test_bytes = fs::read(snare_mid).unwrap();
+        let snare_test_bytes = fs::read(snare_mid).unwrap();
         let mut snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
+
+        let hat_test_bytes = fs::read(hat_mid).unwrap();
+        let mut hat_test_smf = Smf::parse(&hat_test_bytes).unwrap();
 
         // use kick as "base layer"
         kick_test_smf.tracks.append(&mut snare_test_smf.tracks);
+        kick_test_smf.tracks.append(&mut hat_test_smf.tracks);
 
+
+        // export!
         let mut export_mem = Vec::new();
         kick_test_smf.write(&mut export_mem).unwrap();
-
-        // println!("{:?}", export_mem);
-        // let export = Smf::parse(&export_mem).unwrap();
-
         let mut test_f = File::create(valid_name).unwrap();
         test_f.write_all(&export_mem).expect("write unsucc");
-        // cant use save since (on windows) no perms and unable to change writer attr
+        // NOTE: cannot use Smf::save since (on windows) no perms and unable to change writer attr
         // export.save(name).unwrap();
     }
 }
@@ -167,7 +164,7 @@ pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
     // can always change back if req
     let kick = hmap.remove("kick");
     let snare = hmap.remove("snare");
-    let hat = hmap.remove("hat");
+    let hat = hmap.remove("hihat");
     let crash = hmap.remove("crash");
     let ride = hmap.remove("ride");
     let rack_tom = hmap.remove("rack_tom");

@@ -1,5 +1,5 @@
 use rand::seq::IteratorRandom;
-use std::{collections::HashMap, fmt::format, io::Write, path::PathBuf};
+use std::{collections::HashMap, fmt::format, fs::File, io::Write, path::PathBuf};
 use midly::Smf;
 use std::fs;
 
@@ -82,7 +82,7 @@ impl ChosenMIDI {
         7. Done ! Smile.
         */
 
-        export_name_validation(name.to_string());
+        let valid_name = export_name_validation(name.to_string());
 
         // 1. unwrap & get path
         // TODO: Error handling, make sure not unwrapping a None; might be better practice to write unwrap_struct fn
@@ -100,10 +100,10 @@ impl ChosenMIDI {
         // let floor_tom = self.floor_tom.as_ref().unwrap();
 
         // 2. get all midi (if not none or sumshi)
-        let mut kick_test_bytes = fs::read(kick_mid).unwrap();
+        let kick_test_bytes = fs::read(kick_mid).unwrap();
         let kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 
-        let mut snare_test_bytes = fs::read(snare_mid).unwrap();
+        let snare_test_bytes = fs::read(snare_mid).unwrap();
         let snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
 
         // println!("{:?}\n\n", kick_test_smf);
@@ -112,8 +112,15 @@ impl ChosenMIDI {
         let mut export_mem = Vec::new();
         kick_test_smf.write(&mut export_mem).unwrap();
         snare_test_smf.write(&mut export_mem).unwrap();
-        let export = Smf::parse(&export_mem).unwrap();
-        export.save(name).unwrap();
+        // let export = Smf::parse(&export_mem).unwrap();
+
+        // TODO/FIXME remove end of track bytes
+
+        // assert_eq!(export_mem, kick_test_bytes);
+        let mut test_f = File::create(valid_name).unwrap();
+        test_f.write_all(&export_mem).expect("write unsucc");
+        // cant use save since (on windows) no perms and unable to change writer attr
+        // export.save(name).unwrap();
 
     }
 }

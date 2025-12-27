@@ -100,28 +100,32 @@ impl ChosenMIDI {
         // let floor_tom = self.floor_tom.as_ref().unwrap();
 
         // 2. get all midi (if not none or sumshi)
-        let kick_test_bytes = fs::read(kick_mid).unwrap();
-        let kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
+        let mut kick_test_bytes = fs::read(kick_mid).unwrap();
+        let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 
-        let snare_test_bytes = fs::read(snare_mid).unwrap();
-        let snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
+        let mut snare_test_bytes = fs::read(snare_mid).unwrap();
+        let mut snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
 
-        // println!("{:?}\n\n", kick_test_smf);
-        // println!("{:?}\n", snare_test_smf);
+        // TODO/FIXME remove last two messages (volume off and EOF)
+
+        
+        // kick_test_bytes.truncate(fin);
+        kick_test_smf.tracks.append(&mut snare_test_smf.tracks);
+        // println!("{:?}", kick_test_smf);
 
         let mut export_mem = Vec::new();
         kick_test_smf.write(&mut export_mem).unwrap();
-        snare_test_smf.write(&mut export_mem).unwrap();
+
+        // println!("{:?}", export_mem);
         // let export = Smf::parse(&export_mem).unwrap();
 
-        // TODO/FIXME remove end of track bytes
 
-        // assert_eq!(export_mem, kick_test_bytes);
+
+        // BELOW SHOULD WORK ONCE ABOVE IS DONE
         let mut test_f = File::create(valid_name).unwrap();
         test_f.write_all(&export_mem).expect("write unsucc");
         // cant use save since (on windows) no perms and unable to change writer attr
         // export.save(name).unwrap();
-
     }
 }
 

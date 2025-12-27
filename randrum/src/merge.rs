@@ -1,18 +1,17 @@
 use rand::seq::IteratorRandom;
-use std::{collections::HashMap, path::{PathBuf}};
-use midly::{Smf, num::u4};
+use std::{collections::HashMap, io::Write, path::PathBuf};
+use midly::Smf;
 use std::fs;
 
 #[cfg(test)]
 mod test {
-    use std::path::PathBuf;
     use std::fs;
     use crate::merge::ChosenMIDI;
-    use midly::{Smf, num::u4};
+    use midly::Smf;
 
     #[test]
     fn k4fs24() {
-        let correct_bytes = fs::read("test/k4s24.MID").unwrap();
+        let correct_bytes = fs::read("test/k4fs24.MID").unwrap();
         let correct_smf = Smf::parse(&correct_bytes).unwrap();
 
         let test_mid = ChosenMIDI { 
@@ -30,7 +29,7 @@ mod test {
         let test_bytes = fs::read("exports/TESTk4fs24.MID").unwrap();
         let test_smf = Smf::parse(&test_bytes).unwrap();
 
-        assert_eq!(test_smf, correct_smf);
+        assert_eq!(test_smf, correct_smf); // may need to compare bytes only, since event order (apparently) does not matter
     }
 
     fn k13s24h8() {
@@ -74,7 +73,6 @@ impl ChosenMIDI {
     pub fn export(&self, name: &str) {
         /*
         TODO: 
-        0. name validation (.ie ends in .MID/normalization)
         2. merge each Smf object into one
         3. """""export""""" .mid file 
             (unsure if right terminology)
@@ -84,8 +82,10 @@ impl ChosenMIDI {
         7. Done ! Smile.
         */
 
+        export_name_validation(name.to_string());
+
         // 1. unwrap & get path
-        // TODO: Error handling, make sure not unwrapping a None
+        // TODO: Error handling, make sure not unwrapping a None; might be better practice to write unwrap_struct fn
         // let kick_mid = self.kick.as_ref().unwrap();
         // let snare_mid = self.snare.as_ref().unwrap();
 
@@ -100,22 +100,30 @@ impl ChosenMIDI {
         // let floor_tom = self.floor_tom.as_ref().unwrap();
 
         // 2. get all midi (if not none or sumshi)
-        let kick_test_bytes = fs::read(kick_mid).unwrap();
+        let mut kick_test_bytes = fs::read(kick_mid).unwrap();
         let kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 
-        let snare_test_bytes = fs::read(snare_mid).unwrap();
+        let mut snare_test_bytes = fs::read(snare_mid).unwrap();
         let snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
 
-        println!("{:?}\n\n", kick_test_smf.tracks);
-        println!("{:?}", snare_test_smf);
+        // println!("{:?}\n\n", kick_test_smf);
+        // println!("{:?}\n", snare_test_smf);
 
-        /* NOTE: Since drum channels are not universal 
-            (fe. someone could have a snare on A3 while another on C3), 
-            just make sure each file is not on same channel (ie. alter byte)
-        */
+        let mut export_mem = Vec::new();
+        kick_test_smf.write(&mut export_mem).unwrap();
+        snare_test_smf.write(&mut export_mem).unwrap();
+        let export = Smf::parse(&export_mem).unwrap();
+        export.save(name).unwrap();
 
-        // for each non-None midi file, call change_midi_channel and do so wrt proper channel as defined in enum
+    }
+}
 
+pub fn export_name_validation(name: String) -> String {
+    if name.ends_with(".MID") {
+        name
+    } else {
+        let new = format!("{}{}", name, ".MID");
+        new
     }
 }
 

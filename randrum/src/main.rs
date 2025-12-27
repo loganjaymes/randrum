@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use midly::Smf;
 
 /*
 mod args;
@@ -9,14 +10,6 @@ use clap::{Args, Parser, Subcommand};
 mod merge;
 
 fn main() {
-    // let args = RanDrumArgs::parse();
-    let path = PathBuf::from("input");
-    let picked_files = merge::pick_rand(path);
-
-    let a = merge::hmap_to_struct(picked_files);
-
-    // println!("{:?}", a.unwrap());
-
     /*
     TODO: 
     2. merge each Smf object into one
@@ -28,5 +21,9 @@ fn main() {
     7. Done ! Smile.
     */
 
-    a.export("a");
+    // let args = RanDrumArgs::parse();
+    let path = PathBuf::from("input");
+    let picked_files = merge::pick_rand(path);
+    let a = merge::hmap_to_struct(picked_files);
+    a.export("test");
 }

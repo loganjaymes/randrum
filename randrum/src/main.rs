@@ -21,9 +21,11 @@ fn main() {
     7. Done ! Smile.
     */
 
+    /*
     // let args = RanDrumArgs::parse();
     let path = PathBuf::from("input");
     let picked_files = merge::pick_rand(path);
     let a = merge::hmap_to_struct(picked_files);
     a.export("test");
+    */ 
 }

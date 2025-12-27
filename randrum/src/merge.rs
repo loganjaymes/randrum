@@ -1,5 +1,5 @@
 use rand::seq::IteratorRandom;
-use std::{collections::HashMap, io::Write, path::PathBuf};
+use std::{collections::HashMap, fmt::format, io::Write, path::PathBuf};
 use midly::Smf;
 use std::fs;
 
@@ -118,13 +118,16 @@ impl ChosenMIDI {
     }
 }
 
-pub fn export_name_validation(name: String) -> String {
-    if name.ends_with(".MID") {
-        name
-    } else {
-        let new = format!("{}{}", name, ".MID");
-        new
+pub fn export_name_validation(mut name: String) -> String {
+    if !name.ends_with(".MID") {
+        name = format!("{}{}", name, ".MID");
     }
+
+    if !name.starts_with("exports/") {
+        name = format!("{}{}", "exports/", name);
+    }
+
+    name
 }
 
 pub fn pick_rand(path: PathBuf) -> HashMap<String, PathBuf> {

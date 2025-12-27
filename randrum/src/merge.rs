@@ -1,6 +1,6 @@
 use rand::seq::IteratorRandom;
 use std::{collections::HashMap, fs::File, io::Write, path::PathBuf};
-use midly::Smf;
+use midly::{Format, Header, Smf, Timing};
 use std::fs;
 
 /* IGNORE TESTS SINCE COMPARING ISNT 100% ACCURATE
@@ -89,6 +89,10 @@ impl ChosenMIDI {
 
         let valid_name = export_name_validation(name.to_string());
 
+        // let temp_header = { Format::Parallel; Timing:: };
+
+        // let blank_smf = Smf::new();
+
         // 1. unwrap & get path
         // TODO: Error handling, make sure not unwrapping a None; might be better practice to write unwrap_struct fn
         let kick_mid = self.kick.as_ref().unwrap();
@@ -103,13 +107,15 @@ impl ChosenMIDI {
         let kick_test_bytes = fs::read(kick_mid).unwrap();
         let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
 
+        println!("{:?}", kick_test_smf);
+
         let snare_test_bytes = fs::read(snare_mid).unwrap();
         let mut snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
 
         let hat_test_bytes = fs::read(hat_mid).unwrap();
         let mut hat_test_smf = Smf::parse(&hat_test_bytes).unwrap();
 
-        // use kick as "base layer"
+        // cant use kick as base layer, what if user doesnt want?
         kick_test_smf.tracks.append(&mut snare_test_smf.tracks);
         kick_test_smf.tracks.append(&mut hat_test_smf.tracks);
 

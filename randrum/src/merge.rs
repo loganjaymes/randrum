@@ -1,5 +1,5 @@
 use rand::seq::IteratorRandom;
-use std::{collections::HashMap, fs::File, io::Write, path::PathBuf};
+use std::{collections::HashMap, fs::File, io::Write, ops::BitAnd, path::PathBuf};
 use midly::{Format, Header, Smf, Timing};
 use std::fs;
 
@@ -89,12 +89,28 @@ impl ChosenMIDI {
 
         let valid_name = export_name_validation(name.to_string());
 
-        // let temp_header = { Format::Parallel; Timing:: };
-
-        // let blank_smf = Smf::new();
+        // 960 may be incorrect/not always true, based on time sig
+        let temp_header = Header::new(Format::Parallel, Timing::Metrical(960.into()));
+        let mut init_smf = Smf::new(temp_header);
 
         // 1. unwrap & get path
         // TODO: Error handling, make sure not unwrapping a None; might be better practice to write unwrap_struct fn
+        /*
+        if let Some(kick_mid) = self.kick.as_ref() {
+            let kick_test_bytes: Vec<u8> = fs::read(kick_mid).unwrap();
+            let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
+            // println!("{:?}", kick_test_smf);
+            init_smf.tracks.append(&mut kick_test_smf.tracks);
+        }   
+
+        if let Some(snare_mid) = self.snare.as_ref() {
+            let snare_test_bytes: Vec<u8> = fs::read(snare_mid).unwrap();
+            let mut snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
+            init_smf.tracks.append(&mut snare_test_smf.tracks);
+        }  
+        */
+
+
         let kick_mid = self.kick.as_ref().unwrap();
         let snare_mid = self.snare.as_ref().unwrap();
         let hat_mid = self.hat.as_ref().unwrap();
@@ -104,10 +120,9 @@ impl ChosenMIDI {
         // let floor_tom_mid = self.floor_tom.as_ref().unwrap();
 
         // 2. get all midi (if not none or sumshi)
+        
         let kick_test_bytes = fs::read(kick_mid).unwrap();
         let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
-
-        println!("{:?}", kick_test_smf);
 
         let snare_test_bytes = fs::read(snare_mid).unwrap();
         let mut snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
@@ -115,14 +130,9 @@ impl ChosenMIDI {
         let hat_test_bytes = fs::read(hat_mid).unwrap();
         let mut hat_test_smf = Smf::parse(&hat_test_bytes).unwrap();
 
-        // cant use kick as base layer, what if user doesnt want?
-        kick_test_smf.tracks.append(&mut snare_test_smf.tracks);
-        kick_test_smf.tracks.append(&mut hat_test_smf.tracks);
-
-
         // export!
         let mut export_mem = Vec::new();
-        kick_test_smf.write(&mut export_mem).unwrap();
+        init_smf.write(&mut export_mem).unwrap();
         let mut test_f = File::create(valid_name).unwrap();
         test_f.write_all(&export_mem).expect("write unsucc");
         // NOTE: cannot use Smf::save since (on windows) no perms and unable to change writer attr

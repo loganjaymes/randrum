@@ -18,13 +18,24 @@ fn main() {
     println!("  / ___/ __ `/ __ \\/ __  / ___/ / / / __ `__ \\");
     println!(" / /  / /_/ / / / / /_/ / /  / /_/ / / / / / /");
     println!("/_/   \\__,_/_/ /_/\\__,_/_/   \\__,_/_/ /_/ /_/ ");
-    println!("                                              ");
+    println!("                                              \n");
 
+    let valid_instruments = vec![
+        "kick".to_string(), 
+        "snare".to_string(), 
+        "hihat".to_string(), 
+        "ride".to_string(), 
+        "crash".to_string(), 
+        "toms".to_string()
+        ];
     let args = Arguments::parse();
 
     if args.list {
         println!("List of valid instruments:");
-        println!("    kick\n    snare\n    hihat\n    ride\n    crash\n    toms");
+        for v in &valid_instruments {
+            println!("  --> {}", v);
+        }
+        std::process::exit(0);
     }
 
     // if args.generate {
@@ -34,8 +45,21 @@ fn main() {
 
     match (args.instruments, args.name) {
         (Some(instruments), Some(name)) => {
+            for i in &instruments {
+                if !(valid_instruments.contains(&i)) {
+                    eprintln!("{} is not a valid instrument! Please run RANDRUM with -l or --list to see valid instruments.", i);
+                    std::process::exit(1);
+                }
+            }
+            
             println!("Instruments: {:?}", instruments);
             println!("Name of exported file: {}", name);
+
+            let picked_files = merge::pick_rand("input".into(), instruments);
+            let mut a = merge::hmap_to_struct(picked_files);
+            a.export(&name);
+
+            println!("\nSuccessfully exported {}!\nCheck `randrum/exports/{}.MID`", name, name);
         }
         _ => {
             eprintln!("Error: Missing required arguments.");

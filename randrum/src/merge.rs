@@ -157,6 +157,7 @@ pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> 
 }
 
 pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
+    // unwrap is probably bad in prod, however 
     let kick = hmap.remove("kick").unwrap();
     let snare = hmap.remove("snare").unwrap();
     let hat = hmap.remove("hihat").unwrap();

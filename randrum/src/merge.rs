@@ -126,8 +126,8 @@ pub fn export_name_validation(mut name: String) -> String {
     name
 }
 
-pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> {
-    println!("{:?}", nones);
+pub fn pick_rand(path: PathBuf, include: Vec<String>) -> HashMap<String, PathBuf> {
+    // println!("{:?}", include);
     let paths = path.read_dir().expect("Path should never change so it should be fine.");
     let mut hmap: HashMap<String, PathBuf> = HashMap::new(); 
     // above is string and not pathbuf to ensure hashmap ownership
@@ -140,7 +140,7 @@ pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> 
             if let Some(file) = subfolder.read_dir().expect("Path shouldn't change").filter_map(Result::ok).choose(&mut rng) {
                 // above: all valid directory entries go into a map and one is chosen at random
                 let instrument = subfolder.file_name().unwrap();
-                if !nones.contains(&instrument.to_string_lossy().to_string()) {
+                if include.contains(&instrument.to_string_lossy().to_string()) {
                     let midi = file.path();
                     hmap.insert(instrument.to_string_lossy().to_string(), midi);
                 } else {

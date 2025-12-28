@@ -1,5 +1,5 @@
 use rand::seq::IteratorRandom;
-use std::{fs, collections::HashMap, path::PathBuf};
+use std::{collections::HashMap, fs, path::{Path, PathBuf}};
 use midly::{Format, Header, Smf, Timing};
 
 /* IGNORE TESTS SINCE COMPARING ISNT 100% ACCURATE
@@ -136,6 +136,7 @@ pub fn export_name_validation(mut name: String) -> String {
 }
 
 pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> {
+    println!("{:?}", nones);
     let paths = path.read_dir().expect("Path should never change so it should be fine.");
     let mut hmap: HashMap<String, PathBuf> = HashMap::new(); 
     // above is string and not pathbuf to ensure hashmap ownership
@@ -148,14 +149,21 @@ pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> 
             if let Some(file) = subfolder.read_dir().expect("Path shouldn't change").filter_map(Result::ok).choose(&mut rng) {
                 // above: all valid directory entries go into a map and one is chosen at random
                 let instrument = subfolder.file_name().unwrap();
-                let midi = file.path();
-                hmap.insert(instrument.to_string_lossy().to_string(), midi);
+                if !nones.contains(&instrument.to_string_lossy().to_string()) {
+                    let midi = file.path();
+                    hmap.insert(instrument.to_string_lossy().to_string(), midi);
+                } else {
+                    let midi = "input/none/none.MID";
+                    hmap.insert(instrument.to_string_lossy().to_string(), midi.into());
+                }
                 // convert to cow pointer to allow ownership into hashmap after it is dropped
             }
         }
     }
 
+    println!("{:?}", hmap);
     hmap
+    // FIXME: since everything will have a path, can change all Option<PathBuf> to just PathBuf and most likely get rid of stored_unwraps
 }
 
 pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {

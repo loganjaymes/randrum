@@ -23,5 +23,5 @@ fn main() {
     let path = PathBuf::from("input");
     let picked_files = merge::pick_rand(path, ["ride".to_string(), "crash".to_string()].to_vec());
     let mut a = merge::hmap_to_struct(picked_files);
-    a.export("realtest");
+    a.export("CLITEST");
 }

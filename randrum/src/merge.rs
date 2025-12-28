@@ -67,22 +67,9 @@ pub struct ChosenMIDI {
     crash: PathBuf,
     ride: PathBuf,
     toms: PathBuf,
-    // have user input decide if Some or None based on instruments included in args
 }
 
 impl ChosenMIDI {
-    /*
-    pub fn unwrap_struct(&mut self) {
-        // holy chuzz 
-        if let Some(kick_mid) = &self.kick { self.stored_unwraps.push(kick_mid.to_path_buf()); }   
-        if let Some(snare_mid) = &self.snare { self.stored_unwraps.push(snare_mid.to_path_buf()); }  
-        if let Some(hat_mid) = &self.hat { self.stored_unwraps.push(hat_mid.to_path_buf()); }  
-        if let Some(crash_mid) = &self.crash { self.stored_unwraps.push(crash_mid.to_path_buf()); }  
-        if let Some(ride_mid) = &self.ride { self.stored_unwraps.push(ride_mid.to_path_buf()); }  
-        if let Some(tom_mid) = &self.tom { self.stored_unwraps.push(tom_mid.to_path_buf()); }  
-    }
-    */
-
     pub fn export(&mut self, name: &str) {
         // self.unwrap_struct();
         // println!("{:?}", self.stored_unwraps);
@@ -165,21 +152,17 @@ pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> 
         }
     }
 
-    println!("{:?}", hmap);
+    // println!("{:?}", hmap);
     hmap
-    // FIXME: since everything will have a path, can change all Option<PathBuf> to just PathBuf and most likely get rid of stored_unwraps
 }
 
 pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
-    // option midi is unec. since individual fields are options (ie. it (((SHOULD BE))) fine even if all attr. are None)
-    // can always change back if req
     let kick = hmap.remove("kick").unwrap();
     let snare = hmap.remove("snare").unwrap();
     let hat = hmap.remove("hihat").unwrap();
     let crash = hmap.remove("crash").unwrap();
     let ride = hmap.remove("ride").unwrap();
     let toms = hmap.remove("toms").unwrap();
-    // let stored_unwraps: Vec<PathBuf> = Vec::new();
 
     ChosenMIDI {kick, snare, hat, crash, ride, toms }
 }

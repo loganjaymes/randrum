@@ -50,7 +50,7 @@ See the [documentation](DOCS.md).
 | :-: | -------------------------------------------------------------------------------------- | :----: |
 |  1  | Beginning documentation                                                                |   ✅   |
 |  2  | Basic functionality (randomizing given .mid files & exporting)                         |   ✅   |
-|  3  | CLI                                                                                    |   ⚠    |
+|  3  | CLI                                                                                    |   ✅    |
 |  4  | Finalize README (include preview/demo)                                                 |   ⚠    |
 |  5  | Implementation for time signatures other than 4/4                                      |   ❌   |
 |  6  | Implementation for non-normalized midi files (fe. one .MID is 4 bars vs 8 bars)        |   ❌   |

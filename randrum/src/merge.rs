@@ -86,20 +86,20 @@ impl ChosenMIDI {
 
     pub fn export(&mut self, name: &str) {
         self.unwrap_struct();
-        println!("{:?}", self.stored_unwraps);
+        // println!("{:?}", self.stored_unwraps);
         
         let valid_name = export_name_validation(name.to_string());
 
         // 960 may be incorrect/not always true, based on time sig
         let temp_header = Header::new(Format::Parallel, Timing::Metrical(960.into()));
         let mut init_smf = Smf::new(temp_header);
+        // init_smf.tracks.iter()
 
-        /* nop
-        for (i, path) in self.stored_unwraps.iter().enumerate() {
-            let temp_bytes = fs::read(path).unwrap();
-            let temp_smf = Smf::parse(&temp_bytes).unwrap();
-            init_smf.tracks.extend(temp_smf.tracks);
-        }
+        /* 
+        CHOPPED SOLUION SINCE I MGONN ABLOW MY HEAD OFF:
+            pass as vector instruments user does not want
+            in pick random, if folder name in none_vec => val = none.mid
+            this prevents bad unwraps since it will technically have a path, but path will be to empty mid
         */
         
         /*
@@ -135,7 +135,7 @@ pub fn export_name_validation(mut name: String) -> String {
     name
 }
 
-pub fn pick_rand(path: PathBuf) -> HashMap<String, PathBuf> {
+pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> {
     let paths = path.read_dir().expect("Path should never change so it should be fine.");
     let mut hmap: HashMap<String, PathBuf> = HashMap::new(); 
     // above is string and not pathbuf to ensure hashmap ownership

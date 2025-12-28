@@ -66,8 +66,7 @@ pub struct ChosenMIDI {
     hat: Option<PathBuf>,
     crash: Option<PathBuf>,
     ride: Option<PathBuf>,
-    rack_tom: Option<PathBuf>,
-    floor_tom: Option<PathBuf>,
+    tom: Option<PathBuf>,
     stored_unwraps: Vec<PathBuf>,
     // have user input decide if Some or None based on instruments included in args
 }
@@ -80,8 +79,7 @@ impl ChosenMIDI {
         if let Some(hat_mid) = &self.hat { self.stored_unwraps.push(hat_mid.to_path_buf()); }  
         if let Some(crash_mid) = &self.crash { self.stored_unwraps.push(crash_mid.to_path_buf()); }  
         if let Some(ride_mid) = &self.ride { self.stored_unwraps.push(ride_mid.to_path_buf()); }  
-        if let Some(rack_mid) = &self.rack_tom { self.stored_unwraps.push(rack_mid.to_path_buf()); }  
-        if let Some(floor_mid) = &self.floor_tom { self.stored_unwraps.push(floor_mid.to_path_buf()); }  
+        if let Some(tom_mid) = &self.tom { self.stored_unwraps.push(tom_mid.to_path_buf()); }  
     }
 
     pub fn export(&mut self, name: &str) {
@@ -174,8 +172,7 @@ pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
     let hat = hmap.remove("hihat");
     let crash = hmap.remove("crash");
     let ride = hmap.remove("ride");
-    let rack_tom = hmap.remove("rack_tom");
-    let floor_tom = hmap.remove("floor_tom");
+    let tom = hmap.remove("tom");
     let stored_unwraps: Vec<PathBuf> = Vec::new();
 
     ChosenMIDI {kick, snare, hat, crash, ride, rack_tom, floor_tom, stored_unwraps }

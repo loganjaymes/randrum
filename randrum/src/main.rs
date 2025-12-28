@@ -59,10 +59,10 @@ fn main() {
             let mut a = merge::hmap_to_struct(picked_files);
             a.export(&name);
 
-            println!("\nSuccessfully exported {}!\nCheck `randrum/exports/{}.MID`", name, name);
+            println!("\nSuccessfully exported {}.MID!\nCheck `randrum/exports/{}.MID`.", name, name);
         }
         _ => {
-            eprintln!("Error: Missing required arguments.");
+            eprintln!("Error: Missing required arguments.\nTry running with `-h` or `--help`.");
             std::process::exit(1);
         }
     }

@@ -4,6 +4,8 @@ version = "0.1.01"
 edition = "2024"
 license = "GPL-2.0-or-later"
 description = "A CLI tool that randomly merges individual drumhead MIDI files into full drum grooves."
+readme = "README.md"
+repository = "https://github.com/loganjaymes/randrum"
 
 [dependencies]
 clap = { version = "4.5.53", features = ["derive"] }

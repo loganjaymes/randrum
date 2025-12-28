@@ -1,0 +1,2 @@
+# README
+Due to needling supplemental files (see /input/.. and /exports/..), I have not yet figured out a way to publish to crates.io while maintaining the file structure. If anyone reading this is aware of a way to do so, I would be more than happy to do so.

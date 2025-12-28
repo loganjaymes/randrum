@@ -3,7 +3,10 @@
   <br>RANDRUM
 </h1>
   <p align="center">
+    <br />
     Random drum grooves to help break writer's block. 
+    <br />
+    <img src="rdr.png" alt="running --help in RANDRUM" />
     <br />
     <a href="#about">About</a>
     <a href="#installation">Installation and Usage</a>
@@ -13,9 +16,10 @@
 </p>
 
 ## About
+<img src="demo.gif" alt="demo" />
 RANDRUM is a CLI tool created in Rust that randomly merges individual drumhead MIDI files into full drum grooves.
 
-## Installation and Usage
+## Installation
 > [!WARNING]
 >
 > If a folder in `input/` is empty, the program will crash. I am aware of this issue. 
@@ -36,6 +40,9 @@ cargo run --release
 ```
 ### Why No `crates.io`/`cargo install randrum`/etc.?
 Due to needling supplemental files (see /input/.. and /exports/..), I have not yet figured out a way to publish to crates.io while maintaining the file structure. If anyone reading this is aware of a way to do so, I would be more than happy to do so.
+
+## Docs
+See the [documentation](DOCS.md). 
 
 ## Roadmap and Status
 

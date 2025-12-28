@@ -1,6 +1,6 @@
 use rand::seq::IteratorRandom;
-use std::{collections::HashMap, fs, path::{Path, PathBuf}};
-use midly::{Format, Header, Smf, Timing};
+use std::{collections::HashMap, fs::{self, File}, io::Write, path::PathBuf};
+use midly::Smf;
 
 /* IGNORE TESTS SINCE COMPARING ISNT 100% ACCURATE
 #[cfg(test)]
@@ -61,17 +61,17 @@ mod test {
 
 #[derive(Debug)]
 pub struct ChosenMIDI {
-    kick: Option<PathBuf>,
-    snare: Option<PathBuf>,
-    hat: Option<PathBuf>,
-    crash: Option<PathBuf>,
-    ride: Option<PathBuf>,
-    tom: Option<PathBuf>,
-    stored_unwraps: Vec<PathBuf>,
+    kick: PathBuf,
+    snare: PathBuf,
+    hat: PathBuf,
+    crash: PathBuf,
+    ride: PathBuf,
+    toms: PathBuf,
     // have user input decide if Some or None based on instruments included in args
 }
 
 impl ChosenMIDI {
+    /*
     pub fn unwrap_struct(&mut self) {
         // holy chuzz 
         if let Some(kick_mid) = &self.kick { self.stored_unwraps.push(kick_mid.to_path_buf()); }   
@@ -81,43 +81,49 @@ impl ChosenMIDI {
         if let Some(ride_mid) = &self.ride { self.stored_unwraps.push(ride_mid.to_path_buf()); }  
         if let Some(tom_mid) = &self.tom { self.stored_unwraps.push(tom_mid.to_path_buf()); }  
     }
+    */
 
     pub fn export(&mut self, name: &str) {
-        self.unwrap_struct();
+        // self.unwrap_struct();
         // println!("{:?}", self.stored_unwraps);
         
         let valid_name = export_name_validation(name.to_string());
 
         // 960 may be incorrect/not always true, based on time sig
-        let temp_header = Header::new(Format::Parallel, Timing::Metrical(960.into()));
-        let mut init_smf = Smf::new(temp_header);
-        // init_smf.tracks.iter()
-
-        /* 
-        CHOPPED SOLUION SINCE I MGONN ABLOW MY HEAD OFF:
-            pass as vector instruments user does not want
-            in pick random, if folder name in none_vec => val = none.mid
-            this prevents bad unwraps since it will technically have a path, but path will be to empty mid
-        */
+        // let temp_header = Header::new(Format::Parallel, Timing::Metrical(960.into()));
+        // let mut init_smf = Smf::new(temp_header);
         
-        /*
-        let kick_test_bytes = fs::read(kick_mid).unwrap();
+        let kick_test_bytes = fs::read(&self.kick).unwrap();
         let mut kick_test_smf = Smf::parse(&kick_test_bytes).unwrap();
-
-        let snare_test_bytes = fs::read(snare_mid).unwrap();
+        
+        let snare_test_bytes = fs::read(&self.snare).unwrap();
         let mut snare_test_smf = Smf::parse(&snare_test_bytes).unwrap();
-
-        let hat_test_bytes = fs::read(hat_mid).unwrap();
+        
+        let hat_test_bytes = fs::read(&self.hat).unwrap();
         let mut hat_test_smf = Smf::parse(&hat_test_bytes).unwrap();
+        
+        let crash_test_bytes = fs::read(&self.crash).unwrap();
+        let mut crash_test_smf = Smf::parse(&crash_test_bytes).unwrap();
+
+        let ride_test_bytes = fs::read(&self.ride).unwrap();
+        let mut ride_test_smf = Smf::parse(&ride_test_bytes).unwrap();
+
+        let toms_test_bytes = fs::read(&self.toms).unwrap();
+        let mut toms_test_smf = Smf::parse(&toms_test_bytes).unwrap();
+
+        kick_test_smf.tracks.append(&mut snare_test_smf.tracks);
+        kick_test_smf.tracks.append(&mut hat_test_smf.tracks);
+        kick_test_smf.tracks.append(&mut crash_test_smf.tracks);
+        kick_test_smf.tracks.append(&mut ride_test_smf.tracks);
+        kick_test_smf.tracks.append(&mut toms_test_smf.tracks);
 
         // export!
         let mut export_mem = Vec::new();
-        init_smf.write(&mut export_mem).unwrap();
+        kick_test_smf.write(&mut export_mem).unwrap();
         let mut test_f = File::create(valid_name).unwrap();
         test_f.write_all(&export_mem).expect("write unsucc");
         // NOTE: cannot use Smf::save since (on windows) no perms and unable to change writer attr
         // export.save(name).unwrap();
-        */
     }
 }
 
@@ -167,13 +173,13 @@ pub fn pick_rand(path: PathBuf, nones: Vec<String>) -> HashMap<String, PathBuf> 
 pub fn hmap_to_struct(mut hmap: HashMap<String, PathBuf>) -> ChosenMIDI {
     // option midi is unec. since individual fields are options (ie. it (((SHOULD BE))) fine even if all attr. are None)
     // can always change back if req
-    let kick = hmap.remove("kick");
-    let snare = hmap.remove("snare");
-    let hat = hmap.remove("hihat");
-    let crash = hmap.remove("crash");
-    let ride = hmap.remove("ride");
-    let tom = hmap.remove("tom");
-    let stored_unwraps: Vec<PathBuf> = Vec::new();
+    let kick = hmap.remove("kick").unwrap();
+    let snare = hmap.remove("snare").unwrap();
+    let hat = hmap.remove("hihat").unwrap();
+    let crash = hmap.remove("crash").unwrap();
+    let ride = hmap.remove("ride").unwrap();
+    let toms = hmap.remove("toms").unwrap();
+    // let stored_unwraps: Vec<PathBuf> = Vec::new();
 
-    ChosenMIDI {kick, snare, hat, crash, ride, rack_tom, floor_tom, stored_unwraps }
+    ChosenMIDI {kick, snare, hat, crash, ride, toms }
 }

@@ -21,7 +21,7 @@ fn main() {
 
     // let args = RanDrumArgs::parse();
     let path = PathBuf::from("input");
-    let picked_files = merge::pick_rand(path, ["kick".to_string(), "tom".to_string()].to_vec());
-    // let mut a = merge::hmap_to_struct(picked_files);
-    // a.export("test");
+    let picked_files = merge::pick_rand(path, ["ride".to_string(), "crash".to_string()].to_vec());
+    let mut a = merge::hmap_to_struct(picked_files);
+    a.export("realtest");
 }

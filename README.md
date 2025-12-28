@@ -25,19 +25,21 @@ RANDRUM is a CLI tool created in Rust that randomly merges individual drumhead M
 > If a folder in `input/` is empty, the program will crash. I am aware of this issue. 
 > If you would like to clear a certain instrument, do so by deleting all of the files within its respective folder, and replacing them with a blank `.MID` file.
 > One can be found in `none/none.mid`. 
+
 ### Install
-0. Ensure Rust/Cargo is installed on your machine.
-```shell-session
-cargo --version
-```
-1. Clone the repo.
-```shell-session
-git clone git@github.com:loganjaymes/randrum.git
-```
-2. Run cargo in `randrum/`.
-```shell-session
-cargo run --release
-```
+Ensure Rust/Cargo is installed on your machine.
+  ```shell-session
+  cargo --version
+  ```
+Clone the repo.
+  ```shell-session
+  git clone git@github.com:loganjaymes/randrum.git
+  ```
+Run cargo in `randrum/`.
+  ```shell-session
+  cargo run --release
+  ```
+  
 ### Why No `crates.io`/`cargo install randrum`/etc.?
 Due to needling supplemental files (see /input/.. and /exports/..), I have not yet figured out a way to publish to crates.io while maintaining the file structure. If anyone reading this is aware of a way to do so, I would be more than happy to do so.
 
